@@ -6,6 +6,8 @@
  */
 
 module.exports = {
-	
+  hello: (req, res) => {
+    return res.json('Hello World!');
+  }
 };
 
