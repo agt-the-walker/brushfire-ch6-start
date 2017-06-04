@@ -7,6 +7,7 @@
 
 const Emailaddresses = require('machinepack-emailaddresses');
 const Passwords = require('machinepack-passwords');
+const Gravatar = require('machinepack-gravatar');
 
 module.exports = {
   signup: (req, res) => {
@@ -52,7 +53,22 @@ module.exports = {
             return res.serverError(err);
           },
           success: result => {
-            return res.json(result);
+            try {
+              var gravatarURL = Gravatar.getImageUrl({
+                emailAddress: req.param('email'),
+              }).execSync();
+            } catch (err) {
+              return res.serverError(err);
+            }
+
+            const options = {
+              email: req.param('email'),
+              username: req.param('username'),
+              encryptedPassword: result,
+              gravatarURL: gravatarURL
+            };
+
+            return res.json(options);
           }
         });
       },
