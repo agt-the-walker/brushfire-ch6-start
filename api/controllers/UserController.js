@@ -5,6 +5,8 @@
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
 
+const Emailaddresses = require('machinepack-emailaddresses');
+
 module.exports = {
   signup: (req, res) => {
     if (_.isUndefined(req.param('email'))) {
@@ -32,13 +34,25 @@ module.exports = {
       return res.badRequest('Invalid username: must consist of numbers and letters only.');
     }
 
-    const options = {
-      email: req.param('email'),
-      username: req.param('username'),
-      password: req.param('password')
-    };
+    Emailaddresses.validate({
+      string: req.param('email')
+    }).exec({
+      error: err => {
+        return res.serverError(err);
+      },
+      invalid: () => {
+        return res.badRequest('Doesn\'t look like an email address to me!');
+      },
+      success: () => {
+        const options = {
+          email: req.param('email'),
+          username: req.param('username'),
+          password: req.param('password')
+        };
 
-    return res.json(options);
+        return res.json(options);
+      },
+    });
   }
 };
 
