@@ -91,6 +91,28 @@ module.exports = {
         });
       },
     });
+  },
+
+  profile: (req, res) => {
+
+    User.findOne(req.param('id')).exec((err, user) => {
+
+      if (err) return res.negotiate(err);
+
+      if (!user) return res.notFound();
+
+      const options = {
+        email: user.email,
+        username: user.username,
+        gravatarURL: user.gravatarURL,
+        deleted: user.deleted,
+        admin: user.admin,
+        banned: user.banned,
+        id: user.id
+      };
+
+      return res.json(user);
+    });
   }
 };
 
