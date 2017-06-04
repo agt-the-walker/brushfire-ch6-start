@@ -6,6 +6,7 @@
  */
 
 const Emailaddresses = require('machinepack-emailaddresses');
+const Passwords = require('machinepack-passwords');
 
 module.exports = {
   signup: (req, res) => {
@@ -44,13 +45,16 @@ module.exports = {
         return res.badRequest('Doesn\'t look like an email address to me!');
       },
       success: () => {
-        const options = {
-          email: req.param('email'),
-          username: req.param('username'),
+        Passwords.encryptPassword({
           password: req.param('password')
-        };
-
-        return res.json(options);
+        }).exec({
+          error: err => {
+            return res.serverError(err);
+          },
+          success: result => {
+            return res.json(result);
+          }
+        });
       },
     });
   }
