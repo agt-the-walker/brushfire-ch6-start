@@ -73,13 +73,13 @@ module.exports = {
                 if (err.invalidAttributes && err.invalidAttributes.email &&
                     err.invalidAttributes.email[0] &&
                     err.invalidAttributes.email[0].rule === 'unique') {
-                  return res.send(409, 'Email address is already taken by another user, please try again.');
+                  return res.alreadyInUse(err);
                 }
 
                 if (err.invalidAttributes && err.invalidAttributes.username &&
                     err.invalidAttributes.username[0] &&
                     err.invalidAttributes.username[0].rule === 'unique') {
-                  return res.send(409, 'Username is already taken by another user, please try again.');
+                  return res.alreadyInUse(err);
                 }
 
                 return res.negotiate(err);
