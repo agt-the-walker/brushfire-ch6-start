@@ -115,17 +115,19 @@ module.exports = {
     });
   },
 
-  delete: (req, res) => {
+  removeProfile: (req, res) => {
 
     if (!req.param('id')) {
       return res.badRequest('id is a required parameter.');
     }
 
-    User.destroy({
+    User.update({
       id: req.param('id')
-    }).exec((err, usersDestroyed) => {
+    },{
+      deleted: true
+    }, (err, removedUser) => {
       if (err) return res.negotiate(err);
-      if (usersDestroyed.length === 0) {
+      if (removedUser.length === 0) {
         return res.notFound();
       }
       return res.ok();
