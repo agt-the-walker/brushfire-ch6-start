@@ -166,5 +166,18 @@ module.exports = {
         }
       });
     });
+  },
+
+  restoreGravatarURL: (req, res) => {
+
+    try {
+      const restoredGravatarURL = gravatarURL = Gravatar.getImageUrl({
+        emailAddress: req.param('email')
+      }).execSync();
+
+      return res.json(restoredGravatarURL);
+    } catch (err) {
+      return res.serverError(err);
+    }
   }
 };
