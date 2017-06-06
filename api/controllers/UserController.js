@@ -113,6 +113,23 @@ module.exports = {
 
       return res.json(user);
     });
+  },
+
+  delete: (req, res) => {
+
+    if (!req.param('id')) {
+      return res.badRequest('id is a required parameter.');
+    }
+
+    User.destroy({
+      id: req.param('id')
+    }).exec((err, usersDestroyed) => {
+      if (err) return res.negotiate(err);
+      if (usersDestroyed.length === 0) {
+        return res.notFound();
+      }
+      return res.ok();
+    });
   }
 };
 
