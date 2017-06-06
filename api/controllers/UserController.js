@@ -9,6 +9,15 @@ const Emailaddresses = require('machinepack-emailaddresses');
 const Passwords = require('machinepack-passwords');
 const Gravatar = require('machinepack-gravatar');
 
+function updateUser(req, res, field) {
+  User.update(req.param('id'), {
+    [field]: req.param(field)
+  }).exec((err, update) => {
+    if (err) return res.negotiate(err);
+    return res.ok();
+  });
+}
+
 module.exports = {
   signup: (req, res) => {
     if (_.isUndefined(req.param('email'))) {
@@ -236,5 +245,9 @@ module.exports = {
       return res.json(users);
 
     });
-  }
+  },
+
+  updateAdmin: (req, res) => updateUser(req, res, 'admin'),
+  updateBanned: (req, res) => updateUser(req, res, 'banned'),
+  updateDeleted: (req, res) => updateUser(req, res, 'deleted'),
 };
