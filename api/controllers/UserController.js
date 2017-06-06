@@ -194,5 +194,37 @@ module.exports = {
       return res.json(updatedUser);
 
     });
+  },
+
+  changePassword: (req, res) => {
+
+    if (_.isUndefined(req.param('password'))) {
+      return res.badRequest('A password is required!');
+    }
+
+    if (req.param('password').length < 6) {
+      return res.badRequest('Password must be at least 6 characters!');
+    }
+
+    Passwords.encryptPassword({
+      password: req.param('password'),
+    }).exec({
+      error: err => {
+        return res.serverError(err);
+      },
+      success: result => {
+
+        User.update({
+          id: req.param('id')
+        }, {
+          encryptedPassword: result
+        }).exec((err, updatedUser) => {
+          if (err) {
+            return res.negotiate(err);
+          }
+          return res.json(updatedUser);
+        });
+      }
+    });
   }
 };
