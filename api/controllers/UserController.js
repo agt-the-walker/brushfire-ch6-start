@@ -226,5 +226,15 @@ module.exports = {
         });
       }
     });
+  },
+
+  adminUsers: (req, res) => {
+    User.find().exec((err, users) => {
+
+      if (err) return res.negotiate(err);
+
+      return res.json(users);
+
+    });
   }
 };
