@@ -179,5 +179,20 @@ module.exports = {
     } catch (err) {
       return res.serverError(err);
     }
+  },
+
+  updateProfile: (req, res) => {
+
+    User.update({
+      id: req.param('id')
+    }, {
+      gravatarURL: req.param('gravatarURL')
+    }, (err, updatedUser) => {
+
+      if (err) return res.negotiate(err);
+
+      return res.json(updatedUser);
+
+    });
   }
 };
