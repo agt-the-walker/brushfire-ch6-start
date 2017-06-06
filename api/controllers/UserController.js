@@ -132,6 +132,39 @@ module.exports = {
       }
       return res.ok();
     });
+  },
+
+  restoreProfile: (req, res) => {
+
+    User.findOne({
+      email: req.param('email')
+    }, (err, user) => {
+      if (err) return res.negotiate(err);
+      if (!user) return res.notFound();
+
+      Passwords.checkPassword({
+        passwordAttempt: req.param('password'),
+        encryptedPassword: user.encryptedPassword
+      }).exec({
+
+        error: err => {
+          return res.negotiate(err);
+        },
+
+        incorrect: () => {
+          return res.notFound();
+        },
+
+        success: () => {
+          User.update({
+            id: user.id
+          }, {
+            deleted: false
+          }).exec((err, updatedUser) => {
+            return res.json(updatedUser);
+          });
+        }
+      });
+    });
   }
 };
-
